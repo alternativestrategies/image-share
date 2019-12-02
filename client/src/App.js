@@ -4,7 +4,6 @@ import Draggable from 'react-draggable';
 
 class App extends React.Component {
   state = {
-    uploading: false,
     img: []
   }
 
@@ -28,14 +27,9 @@ class App extends React.Component {
     })
   }
 
-  refresh = () => {
-    window.location = "/";
-  }
-
   Post = e => {
 
     // e.preventDefault()
-    this.setState({uploading: true})
 
     const file = document.getElementById('inputGroupFile01').files
     const formData = new FormData()
@@ -48,14 +42,14 @@ class App extends React.Component {
     })
   
 
-    this.setState({
-      img: [...this.state.img,
-      {
-        contentType: file[0].type,
-        filename: file[0].name
-      }
-    ]
-    })
+    // this.setState({
+    //   img: [...this.state.img,
+    //   {
+    //     contentType: file[0].type,
+    //     filename: file[0].name
+    //   }
+    // ]
+    // })
   }
   
   componentDidMount() {
