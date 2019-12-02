@@ -46,13 +46,7 @@ class App extends React.Component {
       method: 'POST',
       body: formData,
     })
-    // .then(res => res.json())
-    // .then(img => {
-    //   this.setState({
-    //     uploading: false,
-    //     img
-    //   })
-    // })
+  
 
     this.setState({
       img: [...this.state.img,
@@ -62,15 +56,11 @@ class App extends React.Component {
       }
     ]
     })
-
-    this.refresh();
   }
   
   componentDidMount() {
     this.fetchImages()
   }
-
-  
 
   render(){
 
