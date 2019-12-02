@@ -1,11 +1,14 @@
 import React from 'react';
+import axios from 'axios';
 import Draggable from 'react-draggable';
 
 class App extends React.Component {
   state = {
+    uploading: false,
     img: []
   }
 
+  // fetch images from the 
   fetchImages = () => {
     fetch('/api/files')
     .then(res => res.json())
@@ -15,9 +18,25 @@ class App extends React.Component {
     }))
   }
 
+  // delete images by passing the name of the file as an argument
+  handleDelete = (name) => {
+    axios.delete('/' + name)
+    .then(response => {console.log(response.data)})
+
+    this.setState({
+      img: this.state.img.filter(el => el.filename !== name)
+    })
+  }
+
+  refresh = () => {
+    window.location = "/";
+  }
+
   Post = e => {
 
     // e.preventDefault()
+    this.setState({uploading: true})
+
     const file = document.getElementById('inputGroupFile01').files
     const formData = new FormData()
   
@@ -27,22 +46,33 @@ class App extends React.Component {
       method: 'POST',
       body: formData,
     })
-    fetch('/api/files')
-    .then(res => res.json())
-    .then((data) => 
-    this.setState({
-      img: data
-    }))
+    // .then(res => res.json())
+    // .then(img => {
+    //   this.setState({
+    //     uploading: false,
+    //     img
+    //   })
+    // })
 
-  // document
-  // .getElementById('img')
-  // .setAttribute('src', `/${file[0].name}`)
+    this.setState({
+      img: [...this.state.img,
+      {
+        contentType: file[0].type,
+        filename: file[0].name
+      }
+    ]
+    })
+
+    this.refresh();
   }
+  
   componentDidMount() {
     this.fetchImages()
   }
-  render(){
 
+  
+
+  render(){
 
     return (
       <div >
@@ -66,9 +96,11 @@ class App extends React.Component {
 <div className="grid">
     {this.state.img.map((img, i) => {
       return <div className="grid-item">
+        <a href="#" onClick={() => {this.handleDelete(img.filename)}}>x</a>
       <Draggable key={i}>
         <img 
         className="grid-image"
+        key={new Date()}
         src={`/${img.filename}`}
         alt="posted"
           />
@@ -76,11 +108,8 @@ class App extends React.Component {
       </div>
     })}
 </div>
-
   </div>
   </div >
-  
-  
     );
   }
 }

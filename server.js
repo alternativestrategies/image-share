@@ -85,6 +85,34 @@ const storage = new GridFsStorage({
     })
   })
 
+  app.delete('/:filename', (req, res) => {
+    try {
+      gfs.files.deleteOne({ filename: req.params.filename }, (err, file) => {
+           // Check if file
+      if (!file || file.length === 0) {
+        return res.status(404).json({
+            responseCode: 1,
+            responseMessage: "error"
+        });
+      }
+  
+      // Check if file is image 
+      if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+        // 
+        const readstream = gfs.createReadStream(file.filename)
+        readstream.pipe(res)
+      } else {
+        res.status(404).json({
+          err: 'Not an image',
+        })
+      }
+    })
+    }
+    catch(err) {
+      console.log(err)
+    } 
+  })
+
   app.get('/api/files', (req, res) => {
       let filesData = [];
       let count = 0;
